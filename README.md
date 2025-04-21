@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✈️ SkyCoach – Application de révision PPL
 
-## Getting Started
+**SkyCoach** est une application web qui permet aux élèves pilotes de réviser efficacement leur licence de pilote privé (PPL). Elle propose des fiches synthétiques, des quiz interactifs, un suivi de progression visuel et un chatbot IA pour t'accompagner dans ta formation.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Objectifs du projet
+
+- Créer un outil intuitif et rapide pour s'entraîner au PPL
+- Proposer des contenus pédagogiques clairs, interactifs et utiles
+- Utiliser des technologies modernes (Next.js, Firebase, GPT)
+- Rendre l’expérience motivante grâce au suivi des progrès
+
+---
+
+## 🔧 Stack technique
+
+- **Next.js (App Router)** – Frontend + rendering serveur (RSC)
+- **Tailwind CSS** – UI rapide et responsive
+- **Firebase** – Auth, Firestore, hébergement
+- **Vercel Edge Functions** – Fonctions ultra rapides (auth, GPT, etc.)
+- **Serverless Node Functions** – Accès Firebase admin, Firestore
+- **OpenAI API** – Coach IA personnalisé
+
+---
+
+## 📁 Structure de navigation
+
+```
+/app
+  /dashboard       → Accueil (résumé, stats)
+  /revision        → Fiches synthèse par thème
+  /quiz            → Lancer un quiz
+  /progression     → Graphe d’évolution
+  /coach           → Chat IA
+  /history         → Historique de quiz
+  /login           → Connexion/inscription
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧩 Fonctionnalités principales
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 📚 Révision
 
-## Learn More
+- Fiches de synthèse organisées par thème (météo, nav, etc.)
+- Composants React Server (RSC) pour charger rapidement les contenus
 
-To learn more about Next.js, take a look at the following resources:
+### ❓ Quiz
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- QCM générés aléatoirement ou par thème
+- Mode "Examen blanc" avec chrono
+- Résultats avec explications et sauvegarde dans l'historique
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 📊 Progression
 
-## Deploy on Vercel
+- Visualisation des scores par thème
+- Graphiques d’évolution (par jour/semaine)
+- Comparaison entre sessions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 🧠 Coach IA
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Chat IA personnalisé basé sur GPT
+- Poser des questions ou simuler des cas pratiques
+
+### 🕓 Historique
+
+- Accès aux quiz passés, scores, corrections
+- Option de rejouer un quiz passé
+
+### 🔐 Auth utilisateur
+
+- Authentification avec Firebase (email/mot de passe)
+- Gestion des tokens avec cookies HttpOnly
+- Vérification d’authentification via Edge Functions
+
+---
+
+## 🛠️ Roadmap (MVP)
+
+### 🔹 Phase 1 : Setup de base
+- Créer une app Next.js avec App Router et TypeScript
+- Ajouter Tailwind CSS et config de base
+- Implémenter `layout.tsx` avec sidebar/menu
+- Ajouter `loading.tsx` et une page dashboard par défaut
+
+### 🔹 Phase 2 : Auth utilisateur (Firebase)
+- Installer Firebase SDK (client)
+- Créer `firebaseConfig.ts` pour initialiser Firebase
+- Implémenter le login/signup avec `firebase/auth`
+- Récupérer l'ID token après connexion
+- Vérifier ce token via une Edge Function (`/api/check-auth`)
+
+### 🔹 Phase 3 : Révision (fiches)
+- Afficher la liste des thèmes (météo, nav, mécanique du vol...)
+- Charger une fiche via RSC depuis un fichier JSON ou markdown
+- Navigation entre les fiches (précédent/suivant)
+
+### 🔹 Phase 4 : Quiz interactif
+- Formulaire de lancement (mode, thème, nombre de questions)
+- Génération de quiz (exemple local ou via API)
+- Interface d’enchaînement des questions
+- Affichage du score final et explication des erreurs
+- Enregistrement du résultat dans Firestore
+
+### 🔹 Phase 5 : Progression
+- Récupérer les résultats utilisateur
+- Afficher l’historique sous forme de liste
+- Graphe d’évolution avec Chart.js ou équivalent
+
+### 🔹 Phase 6 : Coach IA
+- API route Edge (`runtime = 'edge'`) pour appeler OpenAI
+- Composant de chat avec historique local
+- Stockage optionnel des prompts/réponses dans Firestore
+
+---
+
+## ✨ À venir
+
+- Création de fiches via interface admin
+- Gestion des erreurs typiques PPL et explications
+- Ajout de badges, récompenses, niveaux
+
+---
+
+**Let’s fly.** 🛫
+
