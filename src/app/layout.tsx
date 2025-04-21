@@ -32,10 +32,12 @@ export default function RootLayout({
       >
       <SidebarProvider>
           <AppSidebar />
-          <main className='w-full'>
+          <div className='w-full'>
               <Header />
-              {children}
-          </main>
+             <main className='p-8 bg-gray-100 min-h-screen'>
+                 {children}
+             </main>
+          </div>
       </SidebarProvider>
       </body>
     </html>

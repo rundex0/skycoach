@@ -10,6 +10,7 @@ import {
 import {BookOpenCheck, Bot, HelpCircle, LayoutDashboard, LineChart, PanelLeft} from "lucide-react";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
+import {usePathname} from "next/navigation";
 
 
 const links = [
@@ -22,6 +23,7 @@ const links = [
 
 export function AppSidebar() {
     const { toggleSidebar, isMobile } = useSidebar()
+    const pathname = usePathname()
 
     return (
         <Sidebar collapsible="icon">
@@ -35,7 +37,7 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {links.map(({href, label, icon: Icon}) => (
                                 <SidebarMenuItem key={label}>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton asChild isActive={pathname === href}>
                                         <Link
                                             key={href}
                                             href={href}
