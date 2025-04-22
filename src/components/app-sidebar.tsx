@@ -15,8 +15,8 @@ import {usePathname} from "next/navigation";
 
 const links = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/revision', label: 'Révision', icon: BookOpenCheck },
     { href: '/quiz', label: 'Quiz', icon: HelpCircle },
+    { href: '/revision', label: 'Révision', icon: BookOpenCheck },
     { href: '/progression', label: 'Progression', icon: LineChart },
     { href: '/coach', label: 'Coach IA', icon: Bot },
 ]

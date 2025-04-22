@@ -158,7 +158,7 @@ export default function DashboardPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {branches.map((branch) => (
                                     <Card key={branch.name} className="overflow-hidden py-0">
-                                        <div className={`h-1 ${branch.color}`} />
+                                        <div className={`h-1.5 ${branch.color}`} />
                                         <CardHeader className="p-4">
                                             <div className="flex justify-between items-center">
                                                 <CardTitle className="text-lg">{branch.name}</CardTitle>
