@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {
     BookOpen,
@@ -17,8 +16,6 @@ import {
 import {Progress} from "@/components/ui/progress";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
-
-
 
 // Données factices pour la démonstration
 const progressData = [
@@ -88,18 +85,18 @@ const branches = [
 ]
 
 export default function DashboardPage() {
-    const [stats] = useState({
+    const stats = {
         totalQuestions: 350,
         correctAnswers: 280,
         incorrectAnswers: 70,
         completionRate: 80,
         studyTime: 42,
         streak: 7,
-    })
+    }
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold">Dashboard</h1>
-
             {/* Statistiques globales */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>

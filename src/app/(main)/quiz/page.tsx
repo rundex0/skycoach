@@ -189,7 +189,7 @@ export default function QuizPage() {
                         return (
                             <Card
                                 key={theme.id}
-                                className={`overflow-hidden py-0 transition-colors duration-200 ${isSelected ? theme.selectedBg : "bg-white"} ${!isSelected ? theme.hoverColor : ""}`}
+                                className={`overflow-hidden py-0 gap-3 transition-colors duration-200 ${isSelected ? theme.selectedBg : "bg-white"} ${!isSelected ? theme.hoverColor : ""}`}
                             >
                                 <div className={`h-1.5 ${theme.color}`} />
                                 <CardHeader className="p-4">

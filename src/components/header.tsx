@@ -4,10 +4,17 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import {Home, User, LogOut, PanelLeft} from 'lucide-react'
 import {useSidebar} from "@/components/ui/sidebar";
+import {auth} from "@/lib/firebase/client";
+import {toast} from "sonner";
 
 export default function Header() {
   const { open, isMobile, toggleSidebar } = useSidebar();
   const showSideBarCollapseBtn = isMobile ? true : !open
+
+  const logout = async () => {
+    await auth.signOut()
+    toast("Déconnexion réussie")
+  }
 
 
   return (
@@ -34,7 +41,7 @@ export default function Header() {
                 <span className="sr-only">Mon profil</span>
               </Button>
             </Link>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="h-5 w-5" />
               <span className="sr-only">Déconnexion</span>
             </Button>
