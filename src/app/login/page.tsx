@@ -3,7 +3,7 @@
 import React, {useEffect} from "react"
 
 import { useState } from "react"
-import {redirect, useRouter} from "next/navigation"
+import {useRouter} from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -19,12 +19,12 @@ import {useAuth} from "@/hooks/use-auth";
 
 export default function LoginPage() {
     const {isUserLoading, user} = useAuth()
+    const router = useRouter()
 
     useEffect(() => {
-        if(!isUserLoading && user) redirect('/')
-    }, [isUserLoading, user])
+        if(!isUserLoading && user) router.push('/')
+    }, [isUserLoading, user, router])
 
-    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
         email: "",

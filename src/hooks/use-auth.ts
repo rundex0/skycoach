@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {listenAuthState} from "@/lib/firebase/client";
 import {User} from "firebase/auth";
-import {redirect} from "next/navigation";
 
 
 export function useAuth(){
@@ -12,7 +11,6 @@ export function useAuth(){
         const unsubscribe = listenAuthState((user) => {
             setUser(user)
             setIsUserLoading(false)
-            //if(!user) redirect('/login')
         })
 
         return () => unsubscribe()

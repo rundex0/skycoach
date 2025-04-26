@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { CheckCircle2, XCircle, Clock, ArrowLeft, ArrowRight, Home, BookOpen, Pause, Play } from "lucide-react"
 import {QuizConfig, QuizQuestion} from "@/interfaces/quiz";
+import QuizPreparationScreen from "@/app/(main)/quiz/_components/QuizPreparationScreen";
 
 
 // Données factices pour le questionnaire

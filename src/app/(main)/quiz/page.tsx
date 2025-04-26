@@ -11,6 +11,7 @@ import { Navigation, CloudSun, BookOpen, Plane, LineChart, Radio, Timer, HelpCir
 
 // Ajouter l'import du router de Next.js en haut du fichier
 import { useRouter } from "next/navigation"
+import QuizPreparationScreen from "@/app/(main)/quiz/_components/QuizPreparationScreen";
 
 // Définition des thèmes disponibles
 const themes = [
@@ -92,6 +93,8 @@ export default function QuizPage() {
         duration: 15,
         immediateFeedback: true,
     })
+    const [isCreating, setIsCreating] = useState(false)
+
 
     // Dans la fonction QuizPage, ajouter le router après les autres états
     const router = useRouter()
@@ -119,15 +122,6 @@ export default function QuizPage() {
                 configSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
             }
         }, 100)
-    }
-
-    // Ajouter une fonction pour démarrer le questionnaire
-    const startQuiz = () => {
-        // Générer un ID unique pour le quiz (dans une vraie application, cela viendrait du backend)
-        const quizId = `${selectedTheme}-${Date.now()}`
-
-        // Rediriger vers la page du questionnaire avec l'ID généré
-        router.push(`/quiz/${quizId}`)
     }
 
     return (
@@ -286,12 +280,13 @@ export default function QuizPage() {
                         )}
                     </CardContent>
                     <CardFooter>
-                        <Button className="w-full" onClick={startQuiz}>
+                        <Button className="w-full" onClick={() => setIsCreating(true)}>
                             Commencer le questionnaire
                         </Button>
                     </CardFooter>
                 </Card>
             </div>
+            {isCreating && <QuizPreparationScreen />}
         </div>
     )
 }
