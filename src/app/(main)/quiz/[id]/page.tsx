@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import {useState, useEffect, useRef, useCallback, use} from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -178,7 +178,8 @@ const mockQuestions: QuizQuestion[] = [
     },
 ]
 
-export default function QuizPage({ params }: { params: { id: string } }) {
+export default function QuizPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const router = useRouter()
     const [quizConfig, setQuizConfig] = useState<QuizConfig>(mockQuizConfig)
     const [questions, setQuestions] = useState<QuizQuestion[]>(mockQuestions)
@@ -199,11 +200,51 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
     const timerRef = useRef<NodeJS.Timeout | null>(null)
 
+
+    // Terminer le quiz et calculer les résultats
+    const finishQuiz = useCallback(() => {
+        if (timerRef.current) {
+            clearInterval(timerRef.current)
+            timerRef.current = null
+        }
+
+        let correctCount = 0
+        let incorrectCount = 0
+
+        // Calculer le nombre de réponses correctes et incorrectes
+        Object.entries(selectedAnswers).forEach(([questionId, answerId]) => {
+            const question = questions.find((q) => q.id === Number.parseInt(questionId))
+            if (question) {
+                const selectedOption = question.options.find((opt) => opt.id === answerId)
+                if (selectedOption?.isCorrect) {
+                    correctCount++
+                } else {
+                    incorrectCount++
+                }
+            }
+        })
+
+        // Calculer le score en pourcentage
+        const score = Math.round((correctCount / questions.length) * 100)
+
+        // Calculer le temps pris
+        const timeTaken = quizConfig.duration * 60 - timeRemaining
+
+        setResults({
+            correctAnswers: correctCount,
+            incorrectAnswers: incorrectCount,
+            score,
+            timeTaken,
+        })
+
+        setQuizCompleted(true)
+    }, [questions, quizConfig.duration, selectedAnswers, timeRemaining])
+
     // Initialisation du quiz
     useEffect(() => {
         // Dans une application réelle, on chargerait les données du quiz depuis une API
         // en utilisant l'ID du quiz passé dans les paramètres de l'URL
-        console.log("Quiz ID:", params.id)
+        console.log("Quiz ID:", id)
 
         // Démarrer le timer
         if (quizConfig.duration > 0 && !isPaused) {
@@ -228,7 +269,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
                 clearInterval(timerRef.current)
             }
         }
-    }, [params.id, quizConfig.duration, quizCompleted, isPaused])
+    }, [id, quizConfig.duration, quizCompleted, isPaused, finishQuiz])
 
     // Formater le temps restant
     const formatTime = (seconds: number) => {
@@ -309,45 +350,6 @@ export default function QuizPage({ params }: { params: { id: string } }) {
             clearInterval(timerRef.current)
             timerRef.current = null
         }
-    }
-
-    // Terminer le quiz et calculer les résultats
-    const finishQuiz = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current)
-            timerRef.current = null
-        }
-
-        let correctCount = 0
-        let incorrectCount = 0
-
-        // Calculer le nombre de réponses correctes et incorrectes
-        Object.entries(selectedAnswers).forEach(([questionId, answerId]) => {
-            const question = questions.find((q) => q.id === Number.parseInt(questionId))
-            if (question) {
-                const selectedOption = question.options.find((opt) => opt.id === answerId)
-                if (selectedOption?.isCorrect) {
-                    correctCount++
-                } else {
-                    incorrectCount++
-                }
-            }
-        })
-
-        // Calculer le score en pourcentage
-        const score = Math.round((correctCount / questions.length) * 100)
-
-        // Calculer le temps pris
-        const timeTaken = quizConfig.duration * 60 - timeRemaining
-
-        setResults({
-            correctAnswers: correctCount,
-            incorrectAnswers: incorrectCount,
-            score,
-            timeTaken,
-        })
-
-        setQuizCompleted(true)
     }
 
     // Vérifier si la réponse sélectionnée est correcte

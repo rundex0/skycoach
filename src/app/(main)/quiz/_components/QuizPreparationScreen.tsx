@@ -1,9 +1,8 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Progress} from "@/components/ui/progress";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useState} from "react";
 import {Brain, CheckCircle, Database, FileCheck} from "lucide-react";
 import {useRouter} from "next/navigation";
-import {Button} from "@/components/ui/button";
 
 // Étapes de création du questionnaire
 const creationSteps = [
@@ -12,30 +11,26 @@ const creationSteps = [
         label: "Préparation du questionnaire",
         description: "Initialisation des paramètres...",
         icon: Database,
-        duration: 1000,
+        duration: 2_000,
     },
     {
         id: "generating",
         label: "Génération des questions",
         description: "Sélection des questions adaptées à votre niveau...",
         icon: Brain,
-        duration: 5000,
+        duration: 2_000,
     },
     {
         id: "finalizing",
         label: "Finalisation",
         description: "Mise en forme du questionnaire...",
         icon: FileCheck,
-        duration: 1000,
+        duration: 2_000,
     },
 ]
 
-export default function QuizPreparationScreen() {
+export default function QuizPreparationScreen({ selectedTheme }: {selectedTheme: string}) {
     const router = useRouter()
-    const selectedTheme = 'navigation'
-
-    const quizId = `${selectedTheme}-${Date.now()}`
-
 
     // États pour le loader
     const [currentStep, setCurrentStep] = useState(0)
@@ -81,6 +76,22 @@ export default function QuizPreparationScreen() {
 
         return () =>  timer && clearInterval(timer)
     }, [isDone])
+
+    useEffect(() => {
+        (async () => {
+            const quizId = `${selectedTheme}-${Date.now()}`
+            const token = 'debug'
+            const data = await fetch('/api/quiz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ id: quizId, theme: selectedTheme })
+            })
+            console.log(await data.json())
+        })()
+    }, [selectedTheme])
 
     return (
         <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50'>

@@ -1,10 +1,6 @@
 "use client"
 
-import React, {useEffect} from "react"
-
-import { useState } from "react"
-import {useRouter} from "next/navigation"
-import { toast } from "sonner"
+import React, {useActionState} from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,111 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plane, Lock, Mail, User } from "lucide-react"
-import {auth} from "@/lib/firebase/client";
-import {signInWithEmailAndPassword} from "@firebase/auth";
-import {useAuth} from "@/hooks/use-auth";
+import {login} from "@/app/actions/auth";
 
 export default function LoginPage() {
-    const {isUserLoading, user} = useAuth()
-    const router = useRouter()
+    const [state, action, pending] = useActionState(login, undefined)
 
-    useEffect(() => {
-        if(!isUserLoading && user) router.push('/')
-    }, [isUserLoading, user, router])
-
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-        rememberMe: false,
-    })
-    const [registerData, setRegisterData] = useState({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    })
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }))
-    }
-
-    const handleRegisterInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setRegisterData((prev) => ({
-            ...prev,
-            [name]: value,
-        }))
-    }
-
-    const handleCheckboxChange = (checked: boolean) => {
-        setFormData((prev) => ({
-            ...prev,
-            rememberMe: checked,
-        }))
-    }
-
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            await signInWithEmailAndPassword(auth, formData.email, formData.password)
-
-
-            toast("Connexion réussie", {
-                description: "Bienvenue sur PPL Révisions",
-            })
-
-            // Redirection vers le tableau de bord
-            router.push("/dashboard")
-        } catch (error) {
-            console.log(error)
-            toast("Erreur de connexion", {
-                description: "Vérifiez vos identifiants et réessayez"
-            })
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-
-        if (registerData.password !== registerData.confirmPassword) {
-            toast("Erreur d'inscription", {
-                description: "Les mots de passe ne correspondent pas"
-            })
-            setIsLoading(false)
-            return
-        }
-
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-
-            toast("Inscription réussie", {
-                description: "Votre compte a été créé avec succès",
-            })
-
-            // Redirection vers le tableau de bord
-            router.push("/dashboard")
-        } catch (error) {
-            toast("Erreur d'inscription", {
-                description: "Une erreur est survenue lors de la création de votre compte"
-            })
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    if(isUserLoading)
-        return (<div>Loading...</div>)
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -143,7 +39,7 @@ export default function LoginPage() {
                             </TabsList>
 
                             <TabsContent value="login">
-                                <form onSubmit={handleLogin} className="space-y-4">
+                                <form action={action} className="space-y-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="email">Email</Label>
                                         <div className="relative">
@@ -151,13 +47,11 @@ export default function LoginPage() {
                                             <Input
                                                 id="email"
                                                 name="email"
-                                                type="email"
                                                 placeholder="exemple@aviation.fr"
                                                 className="pl-10"
-                                                value={formData.email}
-                                                onChange={handleInputChange}
                                                 required
                                             />
+                                            {state?.errors?.email && <p>{state.errors.email}</p>}
                                         </div>
                                     </div>
                                     <div className="space-y-2">
@@ -175,26 +69,25 @@ export default function LoginPage() {
                                                 type="password"
                                                 placeholder="••••••••"
                                                 className="pl-10"
-                                                value={formData.password}
-                                                onChange={handleInputChange}
                                                 required
                                             />
+                                            {state?.errors?.password && <p>{state.errors.password}</p>}
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <Checkbox id="rememberMe" checked={formData.rememberMe} onCheckedChange={handleCheckboxChange} />
+                                        <Checkbox id="rememberMe" />
                                         <Label htmlFor="rememberMe" className="text-sm">
                                             Se souvenir de moi
                                         </Label>
                                     </div>
-                                    <Button type="submit" className="w-full" disabled={isLoading}>
-                                        {isLoading ? "Connexion en cours..." : "Se connecter"}
+                                    <Button type="submit" className="w-full" disabled={pending}>
+                                        {pending ? "Connexion en cours..." : "Se connecter"}
                                     </Button>
                                 </form>
                             </TabsContent>
 
                             <TabsContent value="register">
-                                <form onSubmit={handleRegister} className="space-y-4">
+                                <form className="space-y-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="register-name">Nom complet</Label>
                                         <div className="relative">
@@ -205,8 +98,6 @@ export default function LoginPage() {
                                                 type="text"
                                                 placeholder="Jean Dupont"
                                                 className="pl-10"
-                                                value={registerData.name}
-                                                onChange={handleRegisterInputChange}
                                                 required
                                             />
                                         </div>
@@ -221,8 +112,6 @@ export default function LoginPage() {
                                                 type="email"
                                                 placeholder="exemple@aviation.fr"
                                                 className="pl-10"
-                                                value={registerData.email}
-                                                onChange={handleRegisterInputChange}
                                                 required
                                             />
                                         </div>
@@ -237,8 +126,6 @@ export default function LoginPage() {
                                                 type="password"
                                                 placeholder="••••••••"
                                                 className="pl-10"
-                                                value={registerData.password}
-                                                onChange={handleRegisterInputChange}
                                                 required
                                             />
                                         </div>
@@ -253,14 +140,12 @@ export default function LoginPage() {
                                                 type="password"
                                                 placeholder="••••••••"
                                                 className="pl-10"
-                                                value={registerData.confirmPassword}
-                                                onChange={handleRegisterInputChange}
                                                 required
                                             />
                                         </div>
                                     </div>
-                                    <Button type="submit" className="w-full" disabled={isLoading}>
-                                        {isLoading ? "Inscription en cours..." : "S'inscrire"}
+                                    <Button type="submit" className="w-full" disabled={pending}>
+                                        {pending ? "Inscription en cours..." : "S'inscrire"}
                                     </Button>
                                 </form>
                             </TabsContent>

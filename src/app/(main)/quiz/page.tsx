@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Navigation, CloudSun, BookOpen, Plane, LineChart, Radio, Timer, HelpCircle, CheckCircle } from "lucide-react"
 
 // Ajouter l'import du router de Next.js en haut du fichier
-import { useRouter } from "next/navigation"
+//import { useRouter } from "next/navigation"
 import QuizPreparationScreen from "@/app/(main)/quiz/_components/QuizPreparationScreen";
 
 // Définition des thèmes disponibles
@@ -97,7 +97,7 @@ export default function QuizPage() {
 
 
     // Dans la fonction QuizPage, ajouter le router après les autres états
-    const router = useRouter()
+    //const router = useRouter()
 
     // Référence pour le scroll automatique
     const configSectionRef = useRef<HTMLDivElement>(null)
@@ -286,7 +286,7 @@ export default function QuizPage() {
                     </CardFooter>
                 </Card>
             </div>
-            {isCreating && <QuizPreparationScreen />}
+            {isCreating && selectedTheme && <QuizPreparationScreen selectedTheme={selectedTheme} />}
         </div>
     )
 }
