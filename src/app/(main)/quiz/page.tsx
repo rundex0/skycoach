@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import {useState, useRef, useActionState} from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,10 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Navigation, CloudSun, BookOpen, Plane, LineChart, Radio, Timer, HelpCircle, CheckCircle } from "lucide-react"
-
-// Ajouter l'import du router de Next.js en haut du fichier
-//import { useRouter } from "next/navigation"
 import QuizPreparationScreen from "@/app/(main)/quiz/_components/QuizPreparationScreen";
+import {createQuiz} from "@/app/actions/quiz";
 
 // Définition des thèmes disponibles
 const themes = [
@@ -87,40 +85,21 @@ const examConfig = {
 export default function QuizPage() {
     // États pour gérer les sélections et configurations
     const [mode, setMode] = useState<"training" | "exam">("training")
-    const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
-    const [config, setConfig] = useState({
-        questionCount: 10,
-        duration: 15,
-        immediateFeedback: true,
-    })
-    const [isCreating, setIsCreating] = useState(false)
-
-
-    // Dans la fonction QuizPage, ajouter le router après les autres états
-    //const router = useRouter()
+    const [selectedTheme, setSelectedTheme] = useState<string>('')
+    const [, createQuizAction, pending] = useActionState(createQuiz, undefined)
 
     // Référence pour le scroll automatique
     const configSectionRef = useRef<HTMLDivElement>(null)
 
     // Fonction pour réinitialiser la sélection de thème
-    const resetThemeSelection = () => {
-        setSelectedTheme(null)
-    }
-
-    // Fonction pour mettre à jour la configuration
-    const updateConfig = (key: keyof typeof config, value: number | boolean) => {
-        setConfig((prev) => ({ ...prev, [key]: value }))
-    }
+    const resetThemeSelection = () => setSelectedTheme('')
 
     // Fonction pour sélectionner un thème et scroller vers la configuration
     const selectTheme = (themeId: string) => {
         setSelectedTheme(themeId)
-
         // Attendre que le DOM soit mis à jour avant de scroller
         setTimeout(() => {
-            if (configSectionRef.current) {
-                configSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
+            if (configSectionRef.current) configSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
         }, 100)
     }
 
@@ -222,71 +201,74 @@ export default function QuizPage() {
                     </Button>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{themes.find((t) => t.id === selectedTheme)?.name}</CardTitle>
-                        <CardDescription>Personnalisez votre questionnaire selon vos besoins</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="questionCount">Nombre de questions</Label>
-                                <Input
-                                    id="questionCount"
-                                    type="number"
-                                    min="5"
-                                    max="50"
-                                    value={mode === "exam" ? examConfig.questionCount : config.questionCount}
-                                    onChange={(e) => updateConfig("questionCount", Number.parseInt(e.target.value))}
-                                    disabled={mode === "exam"}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="duration">Durée (minutes)</Label>
-                                <Input
-                                    id="duration"
-                                    type="number"
-                                    min="5"
-                                    max="120"
-                                    value={mode === "exam" ? examConfig.duration : config.duration}
-                                    onChange={(e) => updateConfig("duration", Number.parseInt(e.target.value))}
-                                    disabled={mode === "exam"}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="immediateFeedback"
-                                checked={mode === "exam" ? examConfig.immediateFeedback : config.immediateFeedback}
-                                onCheckedChange={(checked) => updateConfig("immediateFeedback", Boolean(checked))}
-                                disabled={mode === "exam"}
-                            />
-                            <Label htmlFor="immediateFeedback">Afficher le feedback immédiatement après chaque réponse</Label>
-                        </div>
-
-                        {mode === "exam" && (
-                            <div className="bg-amber-50 border border-amber-200 rounded-md p-4 text-amber-800">
-                                <div className="flex items-start">
-                                    <HelpCircle className="h-5 w-5 mr-2 mt-0.5" />
-                                    <div>
-                                        <p className="font-medium">Mode examen</p>
-                                        <p className="text-sm">
-                                            En mode examen, les paramètres sont verrouillés pour simuler les conditions réelles d&#39;examen.
-                                        </p>
-                                    </div>
+                <form action={createQuizAction}>
+                    <input type="hidden" name="selectedTheme" value={selectedTheme} />
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>{themes.find((t) => t.id === selectedTheme)?.name}</CardTitle>
+                            <CardDescription>Personnalisez votre questionnaire selon vos besoins</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="questionCount">Nombre de questions</Label>
+                                    <Input
+                                        id="questionCount"
+                                        name="questionCount"
+                                        type="number"
+                                        min="5"
+                                        max="50"
+                                        defaultValue="15"
+                                        disabled={mode === "exam"}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="duration">Durée (minutes)</Label>
+                                    <Input
+                                        id="duration"
+                                        name="duration"
+                                        type="number"
+                                        min="5"
+                                        max="120"
+                                        defaultValue="15"
+                                        disabled={mode === "exam"}
+                                    />
                                 </div>
                             </div>
-                        )}
-                    </CardContent>
-                    <CardFooter>
-                        <Button className="w-full" onClick={() => setIsCreating(true)}>
-                            Commencer le questionnaire
-                        </Button>
-                    </CardFooter>
-                </Card>
+
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="immediateFeedback"
+                                    name="immediateFeedback"
+                                    defaultChecked={true}
+                                    disabled={mode === "exam"}
+                                />
+                                <Label htmlFor="immediateFeedback">Afficher le feedback immédiatement après chaque réponse</Label>
+                            </div>
+
+                            {mode === "exam" && (
+                                <div className="bg-amber-50 border border-amber-200 rounded-md p-4 text-amber-800">
+                                    <div className="flex items-start">
+                                        <HelpCircle className="h-5 w-5 mr-2 mt-0.5" />
+                                        <div>
+                                            <p className="font-medium">Mode examen</p>
+                                            <p className="text-sm">
+                                                En mode examen, les paramètres sont verrouillés pour simuler les conditions réelles d&#39;examen.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                        <CardFooter>
+                            <Button className="w-full">
+                                Commencer le questionnaire
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                </form>
             </div>
-            {isCreating && selectedTheme && <QuizPreparationScreen selectedTheme={selectedTheme} />}
+            {pending && selectedTheme && <QuizPreparationScreen selectedTheme={selectedTheme} />}
         </div>
     )
 }
