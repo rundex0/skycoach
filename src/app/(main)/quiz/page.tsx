@@ -203,6 +203,7 @@ export default function QuizPage() {
 
                 <form action={createQuizAction}>
                     <input type="hidden" name="selectedTheme" value={selectedTheme} />
+                    <input type="hidden" name="mode" value={mode} />
                     <Card>
                         <CardHeader>
                             <CardTitle>{themes.find((t) => t.id === selectedTheme)?.name}</CardTitle>
@@ -219,7 +220,7 @@ export default function QuizPage() {
                                         min="5"
                                         max="50"
                                         defaultValue="15"
-                                        disabled={mode === "exam"}
+                                        readOnly={mode === "exam"}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -231,7 +232,7 @@ export default function QuizPage() {
                                         min="5"
                                         max="120"
                                         defaultValue="15"
-                                        disabled={mode === "exam"}
+                                        readOnly={mode === "exam"}
                                     />
                                 </div>
                             </div>

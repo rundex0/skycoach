@@ -46,12 +46,10 @@ export async function destroySession() {
 }
 
 export const verifySession = cache(async () => {
-    const cookie = (await cookies()).get('session')?.value
-    const session = await decrypt(cookie)
+    const jwt = (await cookies()).get('session')?.value
+    const session = await decrypt(jwt)
 
-    if (!session?.userUid) {
-        redirect('/login')
-    }
+    if (!session?.uid) redirect('/login')
 
-    return { isAuth: true, userId: session.userId }
+    return session
 })

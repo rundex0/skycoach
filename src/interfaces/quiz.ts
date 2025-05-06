@@ -1,7 +1,7 @@
 
 
 // Types pour le questionnaire
-export interface QuizQuestion {
+export interface Question {
     id: number
     text: string
     options: {
@@ -12,12 +12,18 @@ export interface QuizQuestion {
     explanation: string
 }
 
+export interface SelectedAnswer {
+    [questionId: string]: string | null
+}
+
 export interface QuizConfig {
     id: string
-    title: string
     theme: string
     mode: "training" | "exam"
-    questionCount: number
+    questions: Question[]
+    selectedAnswers: SelectedAnswer
+    completed: boolean
+    totalScore: number
     duration: number // en minutes
     immediateFeedback: boolean
 }
