@@ -51,3 +51,16 @@ export async function createQuiz(_: undefined, formData: FormData) {
     
     return redirect(`/quiz/${id}`)
 }
+
+
+export async function updateQuiz(quiz: Partial<QuizConfig> & { id: string }) {
+    const { uid } = await verifySession()
+
+    const quizRef = adminDb()
+        .collection("quiz")
+        .doc(uid)
+        .collection("quizzes")
+        .doc(quiz.id)
+
+    await quizRef.update(quiz)
+}

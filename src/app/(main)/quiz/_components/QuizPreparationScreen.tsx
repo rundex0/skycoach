@@ -29,8 +29,7 @@ const creationSteps = [
     },
 ]
 
-export default function QuizPreparationScreen({ selectedTheme }: {selectedTheme: string}) {
-    const router = useRouter()
+export default function QuizPreparationScreen() {
 
     // États pour le loader
     const [currentStep, setCurrentStep] = useState(0)
@@ -76,22 +75,6 @@ export default function QuizPreparationScreen({ selectedTheme }: {selectedTheme:
 
         return () =>  timer && clearInterval(timer)
     }, [isDone])
-
-    useEffect(() => {
-        (async () => {
-            const quizId = `${selectedTheme}-${Date.now()}`
-            const token = 'debug'
-            const data = await fetch('/api/quiz', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ id: quizId, theme: selectedTheme })
-            })
-            console.log(await data.json())
-        })()
-    }, [selectedTheme])
 
     return (
         <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50'>

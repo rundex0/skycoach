@@ -269,7 +269,7 @@ export default function QuizPage() {
                     </Card>
                 </form>
             </div>
-            {pending && selectedTheme && <QuizPreparationScreen selectedTheme={selectedTheme} />}
+            {pending && <QuizPreparationScreen />}
         </div>
     )
 }

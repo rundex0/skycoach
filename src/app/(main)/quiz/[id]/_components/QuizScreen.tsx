@@ -17,6 +17,7 @@ import {Progress} from "@/components/ui/progress";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {Label} from "@/components/ui/label";
 import {useRouter} from "next/navigation";
+import {updateQuiz} from "@/app/actions/quiz";
 
 
 export default function QuizScreen({quiz}: {quiz: QuizConfig}) {
@@ -41,7 +42,7 @@ export default function QuizScreen({quiz}: {quiz: QuizConfig}) {
 
 
     // Terminer le quiz et calculer les résultats
-    const finishQuiz = useCallback(() => {
+    const finishQuiz = useCallback(async () => {
         if (timerRef.current) {
             clearInterval(timerRef.current)
             timerRef.current = null
@@ -55,11 +56,8 @@ export default function QuizScreen({quiz}: {quiz: QuizConfig}) {
             const question = questions.find((q) => q.id === Number.parseInt(questionId))
             if (question) {
                 const selectedOption = question.options.find((opt) => opt.id === answerId)
-                if (selectedOption?.isCorrect) {
-                    correctCount++
-                } else {
-                    incorrectCount++
-                }
+                if (selectedOption?.isCorrect) correctCount++
+                else incorrectCount++
             }
         })
 
@@ -77,13 +75,14 @@ export default function QuizScreen({quiz}: {quiz: QuizConfig}) {
         })
 
         setQuizCompleted(true)
-    }, [questions, duration, selectedAnswers, timeRemaining])
+
+        await updateQuiz({id: quiz.id, completed: true, totalScore: correctCount, selectedAnswers})
+    }, [questions, duration, selectedAnswers, timeRemaining, quiz])
 
     // Initialisation du quiz
     useEffect(() => {
         // Dans une application réelle, on chargerait les données du quiz depuis une API
         // en utilisant l'ID du quiz passé dans les paramètres de l'URL
-        console.log("Quiz ID:", id)
 
         // Démarrer le timer
         if (duration > 0 && !isPaused) {
