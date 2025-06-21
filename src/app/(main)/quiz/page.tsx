@@ -7,35 +7,26 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Navigation, CloudSun, BookOpen, Plane, LineChart, Radio, Timer, HelpCircle, CheckCircle } from "lucide-react"
+import {
+    Navigation,
+    CloudSun,
+    BookOpen,
+    Plane,
+    LineChart,
+    Radio,
+    Timer,
+    HelpCircle,
+    CheckCircle,
+    Wind, ClipboardCheck, FileText
+} from "lucide-react"
 import QuizPreparationScreen from "@/app/(main)/quiz/_components/QuizPreparationScreen";
 import {createQuiz} from "@/app/actions/quiz";
 
 // Définition des thèmes disponibles
 const themes = [
     {
-        id: "navigation",
-        name: "Navigation",
-        description: "Cartes, routes, calculs de navigation",
-        icon: Navigation,
-        color: "bg-blue-500",
-        hoverColor: "hover:bg-blue-50",
-        selectedBg: "bg-blue-500",
-        selectedText: "text-white",
-    },
-    {
-        id: "meteorologie",
-        name: "Météorologie",
-        description: "Phénomènes météo, interprétation des cartes",
-        icon: CloudSun,
-        color: "bg-cyan-500",
-        hoverColor: "hover:bg-cyan-50",
-        selectedBg: "bg-cyan-500",
-        selectedText: "text-white",
-    },
-    {
-        id: "reglementation",
-        name: "Réglementation",
+        id: "droit_aerien",
+        name: "010 Droit aérien",
         description: "Règles de l'air, espaces aériens",
         icon: BookOpen,
         color: "bg-amber-500",
@@ -44,8 +35,8 @@ const themes = [
         selectedText: "text-white",
     },
     {
-        id: "aeronef",
-        name: "Connaissances aéronef",
+        id: "connaissance_generale_des_aeronefs",
+        name: "020 Connaissances générales des aéronefs",
         description: "Systèmes, performances, limitations",
         icon: Plane,
         color: "bg-red-500",
@@ -54,9 +45,19 @@ const themes = [
         selectedText: "text-white",
     },
     {
-        id: "performance",
-        name: "Performance humaine",
-        description: "Facteurs humains, physiologie",
+        id: "performance_et_planification_du_vol",
+        name: "030 Préparation du vol et performance",
+        description: "Masse et centrage, documents, distances, carburant",
+        icon: FileText,
+        color: "bg-pink-500",
+        hoverColor: "hover:bg-pink-50",
+        selectedBg: "bg-pink-500",
+        selectedText: "text-white",
+    },
+    {
+        id: "facteurs_humains",
+        name: "040 Performances humaines",
+        description: "Facteurs humains, physiologie, gestion des ressources",
         icon: LineChart,
         color: "bg-green-500",
         hoverColor: "hover:bg-green-50",
@@ -64,16 +65,57 @@ const themes = [
         selectedText: "text-white",
     },
     {
+        id: "meteorologie",
+        name: "050 Météorologie",
+        description: "Phénomènes météo, interprétation des cartes",
+        icon: CloudSun,
+        color: "bg-cyan-500",
+        hoverColor: "hover:bg-cyan-50",
+        selectedBg: "bg-cyan-500",
+        selectedText: "text-white",
+    },
+    {
+        id: "navigation",
+        name: "060 Navigation",
+        description: "Cartes, routes, calculs de navigation",
+        icon: Navigation,
+        color: "bg-blue-500",
+        hoverColor: "hover:bg-blue-50",
+        selectedBg: "bg-blue-500",
+        selectedText: "text-white",
+    },
+    {
+        id: "procedures_operationnelles",
+        name: "070 Procédures opérationnelles",
+        description: "Procédures normales, urgences, sécurité",
+        icon: ClipboardCheck,
+        color: "bg-teal-500",
+        hoverColor: "hover:bg-teal-50",
+        selectedBg: "bg-teal-500",
+        selectedText: "text-white",
+    },
+    {
+        id: "principes_de_vol",
+        name: "080 Principes de vol",
+        description: "Aérodynamique, forces en vol, maniabilité",
+        icon: Wind,
+        color: "bg-orange-500",
+        hoverColor: "hover:bg-orange-50",
+        selectedBg: "bg-orange-500",
+        selectedText: "text-white",
+    },
+    {
         id: "communications",
-        name: "Communications",
+        name: "090 Communications VFR",
         description: "Phraséologie, procédures radio",
         icon: Radio,
         color: "bg-purple-500",
         hoverColor: "hover:bg-purple-50",
         selectedBg: "bg-purple-500",
         selectedText: "text-white",
-    },
+    }
 ]
+
 
 // Configuration par défaut pour le mode examen
 const examConfig = {
@@ -218,7 +260,7 @@ export default function QuizPage() {
                                         name="questionCount"
                                         type="number"
                                         min="5"
-                                        max="50"
+                                        max="20"
                                         defaultValue="15"
                                         readOnly={mode === "exam"}
                                     />

@@ -12,7 +12,7 @@ export default function Header() {
 
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-sm sticky top-0">
       <div className="m-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
@@ -23,13 +23,13 @@ export default function Header() {
             ) : null}
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/dashboard">
+            <Link href="/quiz">
               <Button variant="ghost" size="sm">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Accueil</span>
               </Button>
             </Link>
-            <Link href="/profile">
+            <Link href="/quiz">
               <Button variant="ghost" size="sm">
                 <User className="h-5 w-5" />
                 <span className="sr-only">Mon profil</span>

@@ -17,11 +17,16 @@ export async function createQuiz(_: undefined, formData: FormData) {
         .collection("questions")
         .doc(selectedTheme)
         .collection("quizQuestions")
-        .limit(questionCount)
-        .get();
+        .get()
+
+
+    const ids = getRandomIntegersInRange(questionCount, 1, 201)
 
     const questions: Question[] = [];
-    snapshot.forEach((doc) => questions.push(doc.data() as Question));
+    snapshot.forEach((doc) => {
+        const question = doc.data() as Question
+        if(ids.includes(question.id)) questions.push(question)
+    });
 
     const { uid } = await verifySession()
 
@@ -40,9 +45,13 @@ export async function createQuiz(_: undefined, formData: FormData) {
         questions,
         selectedAnswers: {},
         completed: false,
-        totalScore: 0,
-        duration,
+        score: 0,
+        correctAnswers: 0,
+        incorrectAnswers: 0,
+        timeTaken: 0,
+        duration: duration * 60,
         immediateFeedback,
+        date: new Date(),
     }
 
     await quizRef.set(quiz);
@@ -63,4 +72,23 @@ export async function updateQuiz(quiz: Partial<QuizConfig> & { id: string }) {
         .doc(quiz.id)
 
     await quizRef.update(quiz)
+}
+
+
+/**
+ * Tire n entiers uniques au hasard dans un intervalle [min, max]
+ * @param n Le nombre d'entiers à tirer
+ * @param min Valeur minimale (incluse)
+ * @param max Valeur maximale (incluse)
+ */
+function getRandomIntegersInRange(n: number, min: number, max: number): number[] {
+    const range = Array.from({ length: max - min + 1 }, (_, i) => i + min);
+
+    // Mélange aléatoire (shuffle)
+    for (let i = range.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [range[i], range[j]] = [range[j], range[i]];
+    }
+
+    return range.slice(0, n);
 }

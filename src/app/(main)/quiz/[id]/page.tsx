@@ -20,7 +20,8 @@ export default async function QuizPage({ params }: { params: Promise<{ id: strin
         const doc = await docRef.get();
         const quiz = doc.exists ? (doc.data() as QuizConfig) : null;
 
-        return quiz ? <QuizScreen quiz={quiz} /> : null
+
+        return quiz ? <QuizScreen quiz={{...quiz, date: new Date(quiz.date)}} /> : null
     } catch (error) {
         console.error("❌ Erreur lors de la récupération du quiz :", error);
         throw error;

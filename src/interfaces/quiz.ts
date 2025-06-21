@@ -23,7 +23,11 @@ export interface QuizConfig {
     questions: Question[]
     selectedAnswers: SelectedAnswer
     completed: boolean
-    totalScore: number
-    duration: number // en minutes
+    correctAnswers: number
+    incorrectAnswers: number
+    score: number
+    duration: number // en secondes
+    timeTaken: number // en secondes
     immediateFeedback: boolean
+    date: Date
 }

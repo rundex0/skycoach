@@ -16,6 +16,7 @@ import {
 import {Progress} from "@/components/ui/progress";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
+import {redirect} from "next/navigation";
 
 // Données factices pour la démonstration
 const progressData = [
@@ -93,6 +94,8 @@ export default function DashboardPage() {
         studyTime: 42,
         streak: 7,
     }
+
+    redirect('/quiz')
 
     return (
         <div className="space-y-6">

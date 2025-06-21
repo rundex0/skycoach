@@ -31,7 +31,7 @@ export async function login(_: LoginFormState | undefined, formData: FormData) {
     const { uid } = await adminAuth().verifyIdToken(idToken)
 
     await createSession(uid)
-    redirect('/dashboard')
+    redirect('/quiz')
 }
 
 export async function logout() {

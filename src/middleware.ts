@@ -24,7 +24,7 @@ export default async function middleware(req: NextRequest) {
 
     // 5. Redirect to /dashboard if the user is authenticated
     if (isPublicRoute && session?.uid) {
-        return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+        return NextResponse.redirect(new URL('/quiz', req.nextUrl))
     }
 
     return NextResponse.next()

@@ -27,7 +27,7 @@ export default function QuizScreen({quiz}: {quiz: QuizConfig}) {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({})
     const [answeredQuestions, setAnsweredQuestions] = useState<Record<number, boolean>>({})
     const [showExplanation, setShowExplanation] = useState(false)
-    const [timeRemaining, setTimeRemaining] = useState(duration * 60) // en secondes
+    const [timeRemaining, setTimeRemaining] = useState(duration) // en secondes
     const [quizCompleted, setQuizCompleted] = useState(false)
     const [isPaused, setIsPaused] = useState(false) // Nouvel état pour la pause
     const [results, setResults] = useState<{
@@ -65,22 +65,27 @@ export default function QuizScreen({quiz}: {quiz: QuizConfig}) {
         const score = Math.round((correctCount / questions.length) * 100)
 
         // Calculer le temps pris
-        const timeTaken = duration * 60 - timeRemaining
+        const timeTaken = duration - timeRemaining
 
-        setResults({
+        const result = {
             correctAnswers: correctCount,
             incorrectAnswers: incorrectCount,
             score,
             timeTaken,
-        })
+        }
+        setResults(result)
 
         setQuizCompleted(true)
 
-        await updateQuiz({id: quiz.id, completed: true, totalScore: correctCount, selectedAnswers})
+        await updateQuiz({...result, id: quiz.id, completed: true, selectedAnswers})
     }, [questions, duration, selectedAnswers, timeRemaining, quiz])
 
     // Initialisation du quiz
     useEffect(() => {
+        if(quiz.completed) {
+            setQuizCompleted(true)
+            setResults(quiz)
+        }
         // Dans une application réelle, on chargerait les données du quiz depuis une API
         // en utilisant l'ID du quiz passé dans les paramètres de l'URL
 
