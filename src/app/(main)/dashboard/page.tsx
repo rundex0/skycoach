@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {
     BookOpen,
@@ -17,8 +16,7 @@ import {
 import {Progress} from "@/components/ui/progress";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
-
-
+import {redirect} from "next/navigation";
 
 // Données factices pour la démonstration
 const progressData = [
@@ -88,18 +86,20 @@ const branches = [
 ]
 
 export default function DashboardPage() {
-    const [stats] = useState({
+    const stats = {
         totalQuestions: 350,
         correctAnswers: 280,
         incorrectAnswers: 70,
         completionRate: 80,
         studyTime: 42,
         streak: 7,
-    })
+    }
+
+    redirect('/quiz')
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold">Dashboard</h1>
-
             {/* Statistiques globales */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {branches.map((branch) => (
                                     <Card key={branch.name} className="overflow-hidden py-0">
-                                        <div className={`h-1 ${branch.color}`} />
+                                        <div className={`h-1.5 ${branch.color}`} />
                                         <CardHeader className="p-4">
                                             <div className="flex justify-between items-center">
                                                 <CardTitle className="text-lg">{branch.name}</CardTitle>

@@ -14,11 +14,11 @@ import {usePathname} from "next/navigation";
 
 
 const links = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/revision', label: 'Révision', icon: BookOpenCheck },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, disabled: true },
     { href: '/quiz', label: 'Quiz', icon: HelpCircle },
-    { href: '/progression', label: 'Progression', icon: LineChart },
-    { href: '/coach', label: 'Coach IA', icon: Bot },
+    { href: '/revision', label: 'Révision', icon: BookOpenCheck, disabled: true },
+    { href: '/progression', label: 'Progression', icon: LineChart, disabled: true },
+    { href: '/coach', label: 'Coach IA', icon: Bot, disabled: true },
 ]
 
 export function AppSidebar() {
@@ -35,7 +35,7 @@ export function AppSidebar() {
                             { isMobile ? null : (<PanelLeft onClick={toggleSidebar}/>)}
                         </SidebarGroupAction>
                         <SidebarMenu>
-                            {links.map(({href, label, icon: Icon}) => (
+                            {links.map(({href, label, icon: Icon, disabled}) =>disabled ? null : (
                                 <SidebarMenuItem key={label}>
                                     <SidebarMenuButton asChild isActive={pathname === href}>
                                         <Link
@@ -55,7 +55,6 @@ export function AppSidebar() {
                     </SidebarGroup>
                 </SidebarContent>
             <SidebarFooter />
-
         </Sidebar>
     )
 }
